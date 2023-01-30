@@ -68,6 +68,7 @@ def ReadNumbersFromImage(target_image, numbers_images):
                       thickness=1)
 
     str_result = ""
+    result.sort(key=lambda tup: tup[0])
     for _, __, number in result:
         str_result+=str(number)
     print(str_result)
