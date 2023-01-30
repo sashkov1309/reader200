@@ -49,7 +49,7 @@ def ReadNumbersFromImage(target_image, numbers_images):
 
 
     result = []
-    dpixel = 15
+    dpixel = 25
     for x, y, number in positions:
         found = False
         for r, ___, ____ in result:
