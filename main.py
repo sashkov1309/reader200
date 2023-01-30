@@ -1,13 +1,6 @@
 import cv2
 import numpy
 
-
-def ClusterNumbers(positions, numbers):
-    result = []
-
-    return result
-
-
 def PreProcessImage(plain_image):
     return cv2.cvtColor(plain_image, cv2.COLOR_BGR2GRAY)
 
@@ -18,14 +11,12 @@ def GenerateNumbersTemplates():
     numbers_path = "images/numbers/"
     template_extension = ".jpg"
 
-    numbers_array = numpy.array(object)
     for n in "1234":
         template_path = numbers_path + n + template_extension
         number_image = cv2.imread(template_path)
         numbers[n] = number_image
-        numbers_array += number_image
 
-    images_together = numpy.concatenate(numbers_array, axis=1)
+    images_together = numpy.concatenate((numbers["1"], numbers["2"], numbers["3"], numbers["4"]), axis=1)
     cv2.imshow(template_path, images_together)
     cv2.waitKey()
 
@@ -39,7 +30,6 @@ def ReadNumbersFromImage(target, numbers_images):
     for pattern in numbers_images:
         coordinates = []
 
-    result = ClusterNumbers(positions, numbers_images)
     return result
 
 
