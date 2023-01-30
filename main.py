@@ -14,15 +14,17 @@ def GenerateNumbersTemplates():
     numbers_path = "images/numbers/"
     template_extension = ".jpg"
 
+    all = list()
     for n in available_numbers:
         template_path = numbers_path + n + template_extension
         number_image = cv2.imread(template_path)
         number_image = PreProcessImage(number_image)
         numbers[n] = number_image
+        all.append(number_image)
 
-    images_together = np.concatenate((numbers["1"], numbers["2"], numbers["3"], numbers["4"]), axis=1)
-    cv2.imshow("Templates", images_together)
-    cv2.waitKey()
+    # images_together = np.concatenate(all, axis=1)
+    # cv2.imshow("Templates", images_together)
+    # cv2.waitKey()
 
     return numbers
 
@@ -34,22 +36,40 @@ def ReadNumbersFromImage(target_image, numbers_images):
     for number in available_numbers:
         template = numbers_images[number]
         w, h = template.shape[::-1]
+        dt = 10
 
-        matched_image = cv2.matchTemplate(target_image, template, cv2.TM_CCOEFF)
-        threshold = 0.8
+        matched_image = cv2.matchTemplate(target_image, template, cv2.TM_CCOEFF_NORMED)
+        threshold = 0.54
 
         loc = np.where(matched_image >= threshold)
         # contours = cv2.findContours()
-        for pt in zip(*loc[::-1]):
-            x_value = pt[0]
-            cv2.rectangle(img=target_image, pt1=pt, pt2=(pt[0] + w, pt[1] + h), color=(0, 0, 255), thickness=2)
-            positions += (number, x_value)
+        all_points = zip(*loc[::-1])
+        for pt in all_points:
+            positions.append((pt[0], pt[1], number))
 
-    cv2.imshow("Templates", matched_image)
+
+    result = []
+    dpixel = 15
+    for x, y, __ in positions:
+        found = False
+        for r, ___ in result:
+            if abs(x-r) < dpixel:
+                found = True
+                break
+
+        if not found:
+            result.append((x, y))
+
+    for x, y in result:
+        cv2.rectangle(img=target_image,
+                      pt1=(x-dt, y - dt),
+                      pt2=(x + w + dt, y + h + dt),
+                      color=(0, 0, 125),
+                      thickness=1)
+
+    print(result)
+    cv2.imshow("Grey", target_image)
     cv2.waitKey()
-
-    # print(positions)
-    # positions.sort(key=lambda a: a[0])
     return result
 
 
