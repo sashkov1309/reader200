@@ -39,7 +39,7 @@ def ReadNumbersFromImage(target_image, numbers_images):
         dt = 10
 
         matched_image = cv2.matchTemplate(target_image, template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.54
+        threshold = 0.55
 
         loc = np.where(matched_image >= threshold)
         # contours = cv2.findContours()
@@ -50,24 +50,28 @@ def ReadNumbersFromImage(target_image, numbers_images):
 
     result = []
     dpixel = 15
-    for x, y, __ in positions:
+    for x, y, number in positions:
         found = False
-        for r, ___ in result:
+        for r, ___, ____ in result:
             if abs(x-r) < dpixel:
                 found = True
                 break
 
         if not found:
-            result.append((x, y))
+            result.append((x, y, number))
 
-    for x, y in result:
+    for x, y, num in result:
         cv2.rectangle(img=target_image,
                       pt1=(x-dt, y - dt),
                       pt2=(x + w + dt, y + h + dt),
                       color=(0, 0, 125),
                       thickness=1)
 
-    print(result)
+    str_result = ""
+    for _, __, number in result:
+        str_result+=str(number)
+    print(str_result)
+
     cv2.imshow("Grey", target_image)
     cv2.waitKey()
     return result
@@ -75,8 +79,8 @@ def ReadNumbersFromImage(target_image, numbers_images):
 
 if __name__ == '__main__':
     targets_directory = "images/dataset/"
-    targets_names = ["img_1"]
-    # targets_names = ["img_1", "img_2", "img_3"]
+    # targets_names = ["img_1"]
+    targets_names = ["img_1", "img_2", "img_3"]
     target_extension = ".jpg"
 
     all_numbers = GenerateNumbersTemplates()
