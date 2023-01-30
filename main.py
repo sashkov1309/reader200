@@ -1,16 +1,54 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import cv2
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def ClusterNumbers(positions, numbers):
+    result = []
+
+    return result
 
 
-# Press the green button in the gutter to run the script.
+def PreProcess(plain_image):
+    return cv2.cvtColor(plain_image, cv2.COLOR_BGR2GRAY)
+
+
+def GenerateNumbersTemplates():
+    numbers = {}
+
+    numbers_path = "images/numbers/"
+    template_extension = ".jpg"
+
+    for n in "1234":
+        template_path = numbers_path + n + template_extension
+        number_image = cv2.imread(template_path)
+        cv2.imshow(template_path, number_image)
+        numbers[n] = number_image
+
+    return numbers
+
+
+def ReadNumbersFromImage(image, numbers_images):
+    result = []
+
+    positions = {}
+    for pattern in numbers_images:
+        coordinates = []
+
+    result = ClusterNumbers(positions, numbers_images)
+    return result
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    targets_directory = "images/dataset/"
+    targets_names = ["img_1", "img_2", "img_3"]
+    target_extension = ".jpg"
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    all_numbers = GenerateNumbersTemplates()
+    for image_name in targets_names:
+        path = targets_directory + image_name + target_extension
+        image = cv2.imread(path, 1)
+        PreProcess(image)
+
+        clustered_numbers = ReadNumbersFromImage(image, all_numbers)
+        print(len(clustered_numbers))
+        for number in clustered_numbers:
+            print(number)
